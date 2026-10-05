@@ -4,12 +4,13 @@ import httpx
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 from ollama import ResponseError
+from Terminal_Commands as TC
 
 from workflow import run_workflow
 
 
 MODEL_NAME = "llama3.2:1b"
-SCREENING_COMMANDS = {"screen", "screen applicants", "start screening"}
+SCREENING_COMMANDS = TC.Commands
 
 
 def main() -> None:
