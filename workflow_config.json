@@ -7,7 +7,7 @@
   ],
   "review_step": "step_05_human_review",
   "cv_folder": "applicants",
-  "model": "llama3.2:1b",
+  "model": "ministral-3:3b",
   "required_skills": [
     "Python",
     "SQL"
