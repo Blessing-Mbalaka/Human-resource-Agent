@@ -1,0 +1,8 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Applicant CVs contain personal data; keep only the folder placeholder
+applicants/*
+!applicants/.gitkeep
