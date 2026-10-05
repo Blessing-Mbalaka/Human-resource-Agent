@@ -1,15 +1,24 @@
 ﻿{% extends "base.html" %}
 {% block content %}
-<h2>{{ title }}</h2>
-<form method="post">
-  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
-  {% if editing %}
-  <p><strong>{{ name }}</strong></p>
-  {% else %}
-  <p><label>Name (file name)<br><input type="text" name="name" value="{{ name }}" maxlength="64" required></label></p>
-  {% endif %}
-  <p><label>CV text<br><textarea name="cv_text" maxlength="20000" required>{{ cv_text }}</textarea></label></p>
-  <button>Save</button>
-  <a href="{{ url_for('index') }}">Cancel</a>
-</form>
+<div class="mx-auto max-w-2xl rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+  <h2 class="mb-4 text-xl font-semibold">{{ title }}</h2>
+  <form method="post" class="space-y-4">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    {% if not editing %}
+    <div>
+      <label for="name" class="mb-1 block text-sm font-medium">Name (used as file name)</label>
+      <input id="name" type="text" name="name" value="{{ name }}" maxlength="64" required class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+      <p class="mt-1 text-xs text-slate-500">Letters, digits, '-' or '_'.</p>
+    </div>
+    {% endif %}
+    <div>
+      <label for="cv_text" class="mb-1 block text-sm font-medium">CV text</label>
+      <textarea id="cv_text" name="cv_text" maxlength="20000" required rows="14" class="w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">{{ cv_text }}</textarea>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">Save</button>
+      <a href="{{ url_for('index') }}" class="text-sm font-medium text-slate-600 hover:underline">Cancel</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

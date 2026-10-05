@@ -1,18 +1,68 @@
 ﻿{% extends "base.html" %}
+{% macro badge(decision) %}
+  {% if decision == 'approve' %}<span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">&#10003; Approved</span>
+  {% elif decision == 'reject' %}<span class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-800">&#10005; Rejected</span>
+  {% elif decision == 'hold' %}<span class="inline-flex items-center gap-1 rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-semibold text-slate-800">&#9208; On hold</span>
+  {% else %}<span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">Awaiting decision</span>{% endif %}
+{% endmacro %}
 {% block content %}
-{% set titles = {"suggested_approval": BINS["suggested_approval"], "suggested_rejection": BINS["suggested_rejection"], "unscreened": "Not yet screened"} %}
+{% set meta = {
+  "suggested_approval": ("Suggested approval", "border-emerald-500", "text-emerald-700"),
+  "suggested_rejection": ("Suggested rejection", "border-red-500", "text-red-700"),
+  "unscreened": ("Not yet screened", "border-slate-400", "text-slate-700")} %}
+<div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+  {% for key, items in groups.items() %}
+  <div class="rounded-xl border-l-4 {{ meta[key][1] }} bg-white p-4 shadow-sm">
+    <p class="text-sm font-medium text-slate-500">{{ meta[key][0] }}</p>
+    <p class="mt-1 text-3xl font-bold {{ meta[key][2] }}">{{ items|length }}</p>
+  </div>
+  {% endfor %}
+</div>
+
 {% for key, items in groups.items() %}
-<h2>{{ titles.get(key, key) }} ({{ items|length }})</h2>
-{% if items %}
-<table>
-{% for name, result in items %}
-<tr>
-  <td><a href="{{ url_for('detail', name=name) }}">{{ name }}</a></td>
-  <td>{% if result %}{{ result.recommendation }}{% endif %}</td>
-  <td>{% if result and result.human_decision %}<strong>{{ result.human_decision }}</strong>{% elif result %}awaiting decision{% endif %}</td>
-</tr>
-{% endfor %}
-</table>
-{% else %}<p class="note">None.</p>{% endif %}
+<section class="mb-8" aria-labelledby="h-{{ key }}">
+  <h2 id="h-{{ key }}" class="mb-2 text-lg font-semibold {{ meta[key][2] }}">{{ meta[key][0] }}</h2>
+  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <table class="min-w-full divide-y divide-slate-200 text-sm">
+      <caption class="sr-only">{{ meta[key][0] }} applicants</caption>
+      <thead class="bg-slate-100 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
+        <tr>
+          <th scope="col" class="px-4 py-3">Applicant</th>
+          <th scope="col" class="px-4 py-3">Required skills</th>
+          <th scope="col" class="px-4 py-3">Preferred skills</th>
+          <th scope="col" class="px-4 py-3">Decision</th>
+          <th scope="col" class="px-4 py-3 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for name, r in items %}
+        <tr class="hover:bg-indigo-50/50">
+          <th scope="row" class="whitespace-nowrap px-4 py-3 text-left font-medium">
+            <a href="{{ url_for('detail', name=name) }}" class="text-indigo-700 hover:underline">{{ name }}</a>
+          </th>
+          <td class="px-4 py-3">
+            {% if r %}
+              {% for s in r.matched_required %}<span class="mr-1 inline-block rounded bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">&#10003; {{ s }}</span>{% endfor %}
+              {% for s in r.missing_required %}<span class="mr-1 inline-block rounded bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">&#10005; {{ s }}</span>{% endfor %}
+            {% else %}<span class="text-slate-400">&mdash;</span>{% endif %}
+          </td>
+          <td class="px-4 py-3">
+            {% if r %}
+              {% for s in r.matched_preferred %}<span class="mr-1 inline-block rounded bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800">{{ s }}</span>{% else %}<span class="text-slate-400">None</span>{% endfor %}
+            {% else %}<span class="text-slate-400">&mdash;</span>{% endif %}
+          </td>
+          <td class="px-4 py-3">{% if r %}{{ badge(r.human_decision) }}{% else %}<span class="text-slate-400">&mdash;</span>{% endif %}</td>
+          <td class="whitespace-nowrap px-4 py-3 text-right">
+            <a href="{{ url_for('detail', name=name) }}" class="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2">{{ 'Review' if r else 'Open' }}</a>
+            <a href="{{ url_for('edit', name=name) }}" class="ml-1 rounded-md border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">Edit</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="px-4 py-6 text-center text-slate-500">No applicants here.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
 {% endfor %}
 {% endblock %}
