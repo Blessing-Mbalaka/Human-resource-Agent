@@ -1,0 +1,18 @@
+﻿{% extends "base.html" %}
+{% block content %}
+{% set titles = {"suggested_approval": BINS["suggested_approval"], "suggested_rejection": BINS["suggested_rejection"], "unscreened": "Not yet screened"} %}
+{% for key, items in groups.items() %}
+<h2>{{ titles.get(key, key) }} ({{ items|length }})</h2>
+{% if items %}
+<table>
+{% for name, result in items %}
+<tr>
+  <td><a href="{{ url_for('detail', name=name) }}">{{ name }}</a></td>
+  <td>{% if result %}{{ result.recommendation }}{% endif %}</td>
+  <td>{% if result and result.human_decision %}<strong>{{ result.human_decision }}</strong>{% elif result %}awaiting decision{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}<p class="note">None.</p>{% endif %}
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,15 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="post">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  {% if editing %}
+  <p><strong>{{ name }}</strong></p>
+  {% else %}
+  <p><label>Name (file name)<br><input type="text" name="name" value="{{ name }}" maxlength="64" required></label></p>
+  {% endif %}
+  <p><label>CV text<br><textarea name="cv_text" maxlength="20000" required>{{ cv_text }}</textarea></label></p>
+  <button>Save</button>
+  <a href="{{ url_for('index') }}">Cancel</a>
+</form>
+{% endblock %}

@@ -6,3 +6,6 @@ __pycache__/
 # Applicant CVs contain personal data; keep only the folder placeholder
 applicants/*
 !applicants/.gitkeep
+
+# Saved screening results and decisions
+data/

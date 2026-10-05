@@ -1,0 +1,28 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tev Applicant Screening</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:820px;margin:2rem auto;padding:0 1rem;color:#222}
+  header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ddd;margin-bottom:1rem}
+  a{color:#0b5cad} .btn,button{background:#0b5cad;color:#fff;border:0;padding:.4rem .8rem;border-radius:4px;cursor:pointer;text-decoration:none;font-size:.9rem}
+  button.danger{background:#b3261e} button.grey{background:#666}
+  .flash{padding:.6rem;border-radius:4px;margin:.5rem 0} .flash.ok{background:#e3f4e3} .flash.error{background:#fbe3e1}
+  table{width:100%;border-collapse:collapse} td,th{padding:.4rem;border-bottom:1px solid #eee;text-align:left}
+  textarea,input[type=text]{width:100%;box-sizing:border-box;padding:.4rem} textarea{min-height:14rem}
+  pre{white-space:pre-wrap;background:#f6f6f6;padding:.8rem;border-radius:4px}
+  .note{color:#666;font-size:.85rem} form.inline{display:inline}
+</style>
+</head>
+<body>
+<header><h1><a href="{{ url_for('index') }}" style="text-decoration:none;color:inherit">Applicant screening</a></h1>
+<a class="btn" href="{{ url_for('create') }}">+ New applicant</a></header>
+<p class="note">Model and rule results are advisory. A person makes every final decision.</p>
+{% for category, message in get_flashed_messages(with_categories=true) %}
+<div class="flash {{ category }}">{{ message }}</div>
+{% endfor %}
+{% block content %}{% endblock %}
+</body>
+</html>

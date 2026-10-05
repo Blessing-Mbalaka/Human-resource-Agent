@@ -63,3 +63,10 @@ review the underlying CV evidence, and leave employment decisions to a human.
 ```powershell
 python -m unittest discover -s tests -v
 ```
+
+## Web app
+
+```powershell
+pip install -r requirements.txt
+python app.py```n
+Open http://127.0.0.1:5000 to create, edit, delete and screen applicants, and record approve/reject/hold decisions. Results are saved to `data/results.json` (gitignored).

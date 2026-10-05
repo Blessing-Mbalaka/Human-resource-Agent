@@ -1,0 +1,37 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<h2>{{ name }}</h2>
+<p>
+  <a class="btn" href="{{ url_for('edit', name=name) }}">Edit</a>
+  <form class="inline" method="post" action="{{ url_for('screen', name=name) }}">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button>{{ 'Re-screen' if result else 'Screen with model' }}</button>
+  </form>
+  <form class="inline" method="post" action="{{ url_for('delete', name=name) }}" onsubmit="return confirm('Delete this applicant?')">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button class="danger">Delete</button>
+  </form>
+</p>
+<h3>CV</h3>
+<pre>{{ cv_text }}</pre>
+
+{% if result %}
+<h3>Screening result</h3>
+<p><strong>{{ BINS.get(result.suggestion_bin, result.suggestion_bin) }}</strong>: {{ result.recommendation }}</p>
+<p>Required found: {{ result.matched_required|join(', ') or 'None' }}<br>
+Required without evidence: {{ result.missing_required|join(', ') or 'None' }}<br>
+Preferred found: {{ result.matched_preferred|join(', ') or 'None' }}</p>
+{% if result.evidence %}<ul>{% for skill, quote in result.evidence.items() %}<li><strong>{{ skill }}</strong>: {{ quote }}</li>{% endfor %}</ul>{% endif %}
+<p class="note">Screened {{ result.screened_at }}</p>
+
+<h3>Your decision</h3>
+{% if result.human_decision %}<p>Current: <strong>{{ result.human_decision }}</strong>{% if result.human_reason %} &mdash; {{ result.human_reason }}{% endif %}</p>{% endif %}
+<form method="post" action="{{ url_for('decide', name=name) }}">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <p><label>Reason (required to reject)<br><input type="text" name="reason" maxlength="1000" value="{{ result.human_reason }}"></label></p>
+  <button name="decision" value="approve">Approve</button>
+  <button name="decision" value="reject" class="danger">Reject</button>
+  <button name="decision" value="hold" class="grey">Hold</button>
+</form>
+{% endif %}
+{% endblock %}
