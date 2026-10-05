@@ -5,11 +5,12 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 from ollama import ResponseError
 from Terminal_Commands as TC
+from ModelName as MN
 
 from workflow import run_workflow
 
 
-MODEL_NAME = "llama3.2:1b"
+MODEL_NAME = MN.name
 SCREENING_COMMANDS = TC.Commands
 
 
