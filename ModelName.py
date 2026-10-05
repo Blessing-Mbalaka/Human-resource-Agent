@@ -1,0 +1,1 @@
+name="llama3.2:1b"
