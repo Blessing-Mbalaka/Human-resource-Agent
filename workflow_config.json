@@ -1,0 +1,45 @@
+{
+  "steps": [
+    "step_01_collect_cv",
+    "step_02_match_skills",
+    "step_03_evaluate_rules",
+    "step_04_report"
+  ],
+  "review_step": "step_05_human_review",
+  "cv_folder": "applicants",
+  "model": "llama3.2:1b",
+  "required_skills": [
+    "Python",
+    "SQL"
+  ],
+  "preferred_skills": [
+    "FastAPI",
+    "LangChain",
+    "PostgreSQL"
+  ],
+  "routing_rules": [
+    {
+      "name": "meets_baseline",
+      "all": [
+        {
+          "field": "missing_required_count",
+          "operator": "equals",
+          "value": 0
+        },
+        {
+          "field": "preferred_match_count",
+          "operator": "gte",
+          "value": 1
+        }
+      ],
+      "recommendation": "Meets configured criteria; review evidence",
+      "bin": "suggested_approval"
+    },
+    {
+      "name": "manual_review",
+      "all": [],
+      "recommendation": "Does not meet all configured criteria; review evidence",
+      "bin": "suggested_rejection"
+    }
+  ]
+}
